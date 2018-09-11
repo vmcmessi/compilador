@@ -14,7 +14,10 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,7 +26,7 @@ import java.util.logging.Logger;
  */
 public class tela extends javax.swing.JFrame {
 
-    private String dir;
+    private File openedFile;
 
     /**
      * Creates new form tela
@@ -275,9 +278,9 @@ public class tela extends javax.swing.JFrame {
             if (clipdata.isDataFlavorSupported(DataFlavor.stringFlavor)) {
                 String s = (String) (clipdata.getTransferData(DataFlavor.stringFlavor));
                 jEditor.replaceSelection(s);
-
             }
         } catch (Exception e) {
+            jStatus.setText(e.getMessage());
         }
     }//GEN-LAST:event_jPasteActionPerformed
 
@@ -289,26 +292,27 @@ public class tela extends javax.swing.JFrame {
     }//GEN-LAST:event_jCopyActionPerformed
 
     private void jSaveActionPerformed() {//GEN-FIRST:event_jSaveActionPerformed
-        String text = jEditor.getText();
-        if (dir == null) {
-            JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-            int returnValue = jfc.showSaveDialog(null);
-           if (returnValue == JFileChooser.APPROVE_OPTION) { 
-            File selectFile = jfc.getSelectedFile();
+        try {
+            String text = jEditor.getText().replaceAll("\n", "\r\n");
 
-            if (selectFile == null) {
-                return;
+            jMensagens.setText(null);
+            if (openedFile == null || !openedFile.exists()) {
+                this.setOpenedFile(TelaUtil.chooserSave(this));
+
+                if (openedFile != null) {
+                    jStatus.setText("O arquivo foi salvo");
+                    TelaUtil.writeToFile(openedFile, text);
+                }
+            } else {
+                jStatus.setText("O arquivo foi salvo");
+                TelaUtil.writeToFile(openedFile, text);
             }
 
-            dir = String.valueOf(selectFile.toPath());
-            jStatus.setText(dir+".txt");
-            jMensagens.setText(null);
-            TelaUtil.writeToFile(selectFile, text);
+        } catch (IOException e) {
+            Logger.getLogger(tela.class.getName()).log(Level.SEVERE, "Erro ao salvar", e);
+            jStatus.setText(e.getMessage());
         }
-        }   else {
-            jMensagens.setText(null);
-            TelaUtil.writeToFile(new File(dir), text);
-        }
+
     }//GEN-LAST:event_jSaveActionPerformed
 
     private void jButton2ActionPerformed() {//GEN-FIRST:event_jButton2ActionPerformed
@@ -316,23 +320,37 @@ public class tela extends javax.swing.JFrame {
         int returnValue = jfc.showOpenDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = jfc.getSelectedFile();
-            dir = String.valueOf(selectedFile.toPath());
-            jStatus.setText(dir+".txt");
-            System.out.println(dir);
+
+            if (selectedFile == null) return;
+
+            this.setOpenedFile(selectedFile);
+            setTitle(String.valueOf(openedFile.toPath()));
+
+            BufferedReader readFile = null;
             try {
-                BufferedReader readFile = new BufferedReader(new FileReader(selectedFile));
-                String line = readFile.readLine();
                 jEditor.setText(null);
                 jMensagens.setText(null);
-                while (line != null) {
-                    System.out.println(line);
+
+                readFile = new BufferedReader(new FileReader(selectedFile));
+
+                String line;
+                while ((line = readFile.readLine()) != null) {
                     jEditor.append(line);
                     jEditor.append("\n");
-                    line = readFile.readLine();
                 }
-                readFile.close();
+
+                jStatus.setText("Arquivo aberto!");
             } catch (IOException ex) {
                 Logger.getLogger(tela.class.getName()).log(Level.SEVERE, null, ex);
+                jStatus.setText(ex.getMessage());
+            } finally {
+                if (readFile != null) {
+                    try {
+                        readFile.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -341,8 +359,18 @@ public class tela extends javax.swing.JFrame {
         jEditor.setText(null);
         jStatus.setText(null);
         jMensagens.setText(null);
-        dir = null;
+        this.setOpenedFile(null);
     }//GEN-LAST:event_jNewActionPerformed
+
+    private void setOpenedFile(File openedFile){
+        this.openedFile = openedFile;
+
+        if(openedFile != null){
+            setTitle(String.valueOf(openedFile.toPath()));
+        }else{
+            setTitle(null);
+        }
+    }
 
     private void initShortcuts() {
         KeyStroke keySave = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK);
