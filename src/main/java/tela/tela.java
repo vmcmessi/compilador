@@ -12,25 +12,26 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author victo
  */
 public class tela extends javax.swing.JFrame {
 
     private String dir;
-    
+
     /**
      * Creates new form tela
      */
     public tela() {
         initComponents();
         jEditor.setBorder(new NumberedBorder());
+        initShortcuts();
     }
 
     /**
@@ -75,12 +76,7 @@ public class tela extends javax.swing.JFrame {
         jNew.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/tela/add-new-document.png"))); // NOI18N
         jNew.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jNewActionPerformed(evt);
-            }
-        });
-        jNew.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                jNewKeyPressed(evt);
+                jNewActionPerformed();
             }
         });
 
@@ -88,7 +84,7 @@ public class tela extends javax.swing.JFrame {
         jButton2.setText("open [ctrl-o]");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                jButton2ActionPerformed();
             }
         });
 
@@ -96,7 +92,7 @@ public class tela extends javax.swing.JFrame {
         jSave.setText("save [ctrl-s]");
         jSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jSaveActionPerformed(evt);
+                jSaveActionPerformed();
             }
         });
 
@@ -104,7 +100,7 @@ public class tela extends javax.swing.JFrame {
         jCopy.setText("copy [ctrl-c]");
         jCopy.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCopyActionPerformed(evt);
+                jCopyActionPerformed();
             }
         });
 
@@ -112,7 +108,7 @@ public class tela extends javax.swing.JFrame {
         jPaste.setText("paste [ctrl-v]");
         jPaste.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPasteActionPerformed(evt);
+                jPasteActionPerformed();
             }
         });
 
@@ -120,7 +116,7 @@ public class tela extends javax.swing.JFrame {
         jCut.setText("cut [ctrl-x]");
         jCut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCutActionPerformed(evt);
+                jCutActionPerformed();
             }
         });
 
@@ -129,7 +125,7 @@ public class tela extends javax.swing.JFrame {
         jCompile.setMargin(new java.awt.Insets(1, 14, 1, 14));
         jCompile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCompileActionPerformed(evt);
+                jCompileActionPerformed();
             }
         });
 
@@ -140,42 +136,42 @@ public class tela extends javax.swing.JFrame {
         jAbout.setMinimumSize(new java.awt.Dimension(111, 23));
         jAbout.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jAboutActionPerformed(evt);
+                jAboutActionPerformed();
             }
         });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jNew, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jSave, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jCopy, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPaste, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
-            .addComponent(jCut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jCompile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jAbout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jNew, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jSave, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jCopy, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPaste, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
+                        .addComponent(jCut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jCompile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jAbout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jNew, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jSave, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jCopy, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jPaste, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jCut, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jCompile, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jAbout, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jNew, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(jSave, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(jCopy, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(jPaste, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(jCut, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(jCompile, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(jAbout, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -202,21 +198,21 @@ public class tela extends javax.swing.JFrame {
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 749, Short.MAX_VALUE)))
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 749, Short.MAX_VALUE)))
         );
         jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jPanel3.setMinimumSize(new java.awt.Dimension(500, 25));
@@ -227,44 +223,44 @@ public class tela extends javax.swing.JFrame {
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jStatus, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jStatus, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jAboutActionPerformed
+    private void jAboutActionPerformed() {//GEN-FIRST:event_jAboutActionPerformed
         jMensagens.setText("Victor Matheus Cunha, Richard Curbani Alfarth e Christian Passold");
     }//GEN-LAST:event_jAboutActionPerformed
 
-    private void jCompileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCompileActionPerformed
+    private void jCompileActionPerformed() {//GEN-FIRST:event_jCompileActionPerformed
         jMensagens.setText("Compilação de programas ainda não foi implementada");
     }//GEN-LAST:event_jCompileActionPerformed
 
-    private void jCutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCutActionPerformed
+    private void jCutActionPerformed() {//GEN-FIRST:event_jCutActionPerformed
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         String text = jEditor.getSelectedText();
         StringSelection selection = new StringSelection(text);
@@ -272,12 +268,12 @@ public class tela extends javax.swing.JFrame {
         jEditor.replaceRange("", jEditor.getSelectionStart(), jEditor.getSelectionEnd());
     }//GEN-LAST:event_jCutActionPerformed
 
-    private void jPasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasteActionPerformed
+    private void jPasteActionPerformed() {//GEN-FIRST:event_jPasteActionPerformed
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         Transferable clipdata = clipboard.getContents(clipboard);
         try {
-            if(clipdata.isDataFlavorSupported(DataFlavor.stringFlavor)){
-                String s = (String)(clipdata.getTransferData(DataFlavor.stringFlavor));
+            if (clipdata.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+                String s = (String) (clipdata.getTransferData(DataFlavor.stringFlavor));
                 jEditor.replaceSelection(s);
 
             }
@@ -285,46 +281,34 @@ public class tela extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jPasteActionPerformed
 
-    private void jCopyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCopyActionPerformed
+    private void jCopyActionPerformed() {//GEN-FIRST:event_jCopyActionPerformed
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         String text = jEditor.getSelectedText();
         StringSelection selection = new StringSelection(text);
         clipboard.setContents(selection, null);
     }//GEN-LAST:event_jCopyActionPerformed
 
-    private void jSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSaveActionPerformed
-        String text = null;
-        text = jEditor.getText();
-        if(dir == null){
+    private void jSaveActionPerformed() {//GEN-FIRST:event_jSaveActionPerformed
+        String text = jEditor.getText();
+        if (dir == null) {
             JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-            int returnValue = jfc.showSaveDialog(null);
             File selectFile = jfc.getSelectedFile();
+
+            if (selectFile == null) {
+                return;
+            }
+
             dir = String.valueOf(selectFile.toPath());
             jStatus.setText(dir);
             jMensagens.setText(null);
-            try {
-                BufferedWriter bfWrite = new BufferedWriter(new FileWriter(selectFile));
-                bfWrite.write(text);
-                bfWrite.close();
-
-            } catch (IOException ex) {
-                Logger.getLogger(tela.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }else{
+            TelaUtil.writeToFile(selectFile, text);
+        } else {
             jMensagens.setText(null);
-            try {
-                BufferedWriter bfWrite = new BufferedWriter(new FileWriter(dir));
-                bfWrite.write(text);
-                bfWrite.close();
-
-            } catch (IOException ex) {
-                Logger.getLogger(tela.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
+            TelaUtil.writeToFile(new File(dir), text);
         }
     }//GEN-LAST:event_jSaveActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void jButton2ActionPerformed() {//GEN-FIRST:event_jButton2ActionPerformed
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         int returnValue = jfc.showOpenDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
@@ -337,33 +321,45 @@ public class tela extends javax.swing.JFrame {
                 String line = readFile.readLine();
                 jEditor.setText(null);
                 jMensagens.setText(null);
-                while(line !=null){
+                while (line != null) {
                     System.out.println(line);
                     jEditor.append(line);
                     jEditor.append("\n");
                     line = readFile.readLine();
                 }
                 readFile.close();
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(tela.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(tela.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jNewKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jNewKeyPressed
-        if((evt.getKeyCode() == KeyEvent.VK_N)&&((evt.getModifiers() & KeyEvent.CTRL_MASK) != 0)){
-            jEditor.setText(null);
-            jMensagens.setText(null);
-        }
-    }//GEN-LAST:event_jNewKeyPressed
-
-    private void jNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jNewActionPerformed
+    private void jNewActionPerformed() {//GEN-FIRST:event_jNewActionPerformed
         jEditor.setText(null);
         jStatus.setText(null);
         jMensagens.setText(null);
     }//GEN-LAST:event_jNewActionPerformed
+
+    private void initShortcuts() {
+        KeyStroke keySave = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK);
+        KeyStroke keyNew = KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK);
+        KeyStroke keyOpen = KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK);
+        KeyStroke keyCopy = KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK);
+        KeyStroke keyPaste = KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_MASK);
+        KeyStroke keyCut = KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK);
+        KeyStroke keyCompile = KeyStroke.getKeyStroke(KeyEvent.VK_F9, 0);
+        KeyStroke keyAbout = KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0);
+
+        TelaUtil.createShortcut("new", jNew, keyNew, this::jNewActionPerformed);
+        TelaUtil.createShortcut("save", jSave, keySave, this::jSaveActionPerformed);
+        TelaUtil.createShortcut("open", jButton2, keyOpen, this::jButton2ActionPerformed);
+        TelaUtil.createShortcut("copy", jCopy, keyCopy, this::jCopyActionPerformed);
+        TelaUtil.createShortcut("paste", jPaste, keyPaste, this::jPasteActionPerformed);
+        TelaUtil.createShortcut("cut", jCut, keyCut, this::jCutActionPerformed);
+        TelaUtil.createShortcut("compile", jCompile, keyCompile, this::jCompileActionPerformed);
+        TelaUtil.createShortcut("about", jAbout, keyAbout, this::jAboutActionPerformed);
+    }
+
 
     /**
      * @param args the command line arguments
@@ -372,7 +368,7 @@ public class tela extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
