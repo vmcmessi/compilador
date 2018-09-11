@@ -292,6 +292,8 @@ public class tela extends javax.swing.JFrame {
         String text = jEditor.getText();
         if (dir == null) {
             JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+            int returnValue = jfc.showSaveDialog(null);
+           if (returnValue == JFileChooser.APPROVE_OPTION) { 
             File selectFile = jfc.getSelectedFile();
 
             if (selectFile == null) {
@@ -299,10 +301,11 @@ public class tela extends javax.swing.JFrame {
             }
 
             dir = String.valueOf(selectFile.toPath());
-            jStatus.setText(dir);
+            jStatus.setText(dir+".txt");
             jMensagens.setText(null);
             TelaUtil.writeToFile(selectFile, text);
-        } else {
+        }
+        }   else {
             jMensagens.setText(null);
             TelaUtil.writeToFile(new File(dir), text);
         }
@@ -314,7 +317,7 @@ public class tela extends javax.swing.JFrame {
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = jfc.getSelectedFile();
             dir = String.valueOf(selectedFile.toPath());
-            jStatus.setText(dir);
+            jStatus.setText(dir+".txt");
             System.out.println(dir);
             try {
                 BufferedReader readFile = new BufferedReader(new FileReader(selectedFile));
@@ -338,6 +341,7 @@ public class tela extends javax.swing.JFrame {
         jEditor.setText(null);
         jStatus.setText(null);
         jMensagens.setText(null);
+        dir = null;
     }//GEN-LAST:event_jNewActionPerformed
 
     private void initShortcuts() {

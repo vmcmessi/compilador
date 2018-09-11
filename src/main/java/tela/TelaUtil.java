@@ -27,8 +27,8 @@ class TelaUtil {
     static void writeToFile(File selectFile, String text){
         try {
 
-            Logger.getLogger(tela.class.getName()).log(Level.SEVERE, String.valueOf(selectFile.canWrite()));
-            BufferedWriter bfWrite = new BufferedWriter(new FileWriter(selectFile));
+           // Logger.getLogger(tela.class.getName()).log(Level.SEVERE, String.valueOf(selectFile.canWrite()));
+            BufferedWriter bfWrite = new BufferedWriter(new FileWriter(selectFile+".txt"));
             bfWrite.write(text);
             bfWrite.close();
 
