@@ -1,0 +1,46 @@
+diff a/src/main/java/tela/tela.java b/src/main/java/tela/tela.java	(rejected hunks)
+@@ -292,26 +292,27 @@
+     }//GEN-LAST:event_jCopyActionPerformed
+ 
+     private void jSaveActionPerformed() {//GEN-FIRST:event_jSaveActionPerformed
+-        String text = jEditor.getText();
+-        if (dir == null) {
+-            JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+-            int returnValue = jfc.showSaveDialog(null);
+-           if (returnValue == JFileChooser.APPROVE_OPTION) { 
+-            File selectFile = jfc.getSelectedFile();
+-
+-            if (selectFile == null) {
+-                return;
+-            }
++        try {
++            String text = jEditor.getText().replaceAll("\n", "\r\n");
+ 
+-            dir = String.valueOf(selectFile.toPath());
+-            jStatus.setText(dir+".txt");
+             jMensagens.setText(null);
+-            TelaUtil.writeToFile(selectFile, text);
+-        }
+-        }   else {
+-            jMensagens.setText(null);
+-            TelaUtil.writeToFile(new File(dir), text);
++            if (openedFile == null || !openedFile.exists()) {
++                this.setOpenedFile(TelaUtil.chooserSave(this));
++
++                if (openedFile != null) {
++                    jStatus.setText("O arquivo foi salvo");
++                    TelaUtil.writeToFile(openedFile, text);
++                }
++            } else {
++                jStatus.setText("O arquivo foi salvo");
++                TelaUtil.writeToFile(openedFile, text);
++            }
++
++        } catch (IOException e) {
++            Logger.getLogger(tela.class.getName()).log(Level.SEVERE, "Erro ao salvar", e);
++            jStatus.setText(e.getMessage());
+         }
++
+     }//GEN-LAST:event_jSaveActionPerformed
+ 
+     private void jButton2ActionPerformed() {//GEN-FIRST:event_jButton2ActionPerformed

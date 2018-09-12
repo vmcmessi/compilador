@@ -1,12 +1,13 @@
 package tela;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileSystemView;
-import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 class TelaUtil {
 
@@ -22,30 +23,17 @@ class TelaUtil {
         button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyStroke, "perform" + actionName);
     }
 
-    static void writeToFile(File selectFile, String text) throws IOException {
-        FileOutputStream fileOutputStream = null;
+
+    static void writeToFile(File selectFile, String text){
         try {
-            fileOutputStream = new FileOutputStream(selectFile);
-            fileOutputStream.write(text.getBytes());
-        } finally {
-            if (fileOutputStream != null) {
-                try {
-                    fileOutputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+
+           // Logger.getLogger(tela.class.getName()).log(Level.SEVERE, String.valueOf(selectFile.canWrite()));
+            BufferedWriter bfWrite = new BufferedWriter(new FileWriter(selectFile+".txt"));
+            bfWrite.write(text);
+            bfWrite.close();
+
+        } catch (IOException ex) {
+            Logger.getLogger(tela.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    static File chooserSave(Component component) {
-        JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        chooser.setDialogTitle("Salvar");
-
-        if(chooser.showSaveDialog(component) == JFileChooser.APPROVE_OPTION){
-            return chooser.getSelectedFile();
-        }
-
-        return null;
     }
 }
