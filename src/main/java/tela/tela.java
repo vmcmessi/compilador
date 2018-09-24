@@ -5,6 +5,8 @@
  */
 package tela;
 
+import core.AnalisadorLexico;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
@@ -260,7 +262,8 @@ public class tela extends javax.swing.JFrame {
     }//GEN-LAST:event_jAboutActionPerformed
 
     private void jCompileActionPerformed() {//GEN-FIRST:event_jCompileActionPerformed
-        jMensagens.setText("Compilação de programas ainda não foi implementada");
+        final String codigo = jEditor.getText();
+        new AnalisadorLexico(jMensagens).analisar(codigo);
     }//GEN-LAST:event_jCompileActionPerformed
 
     private void jCutActionPerformed() {//GEN-FIRST:event_jCutActionPerformed
@@ -293,7 +296,7 @@ public class tela extends javax.swing.JFrame {
 
     private void jSaveActionPerformed() {//GEN-FIRST:event_jSaveActionPerformed
         try {
-            String text = jEditor.getText().replaceAll("\n", "\r\n");
+            String text = jEditor.getText();
 
             jMensagens.setText(null);
             if (openedFile == null || !openedFile.exists()) {
@@ -362,12 +365,12 @@ public class tela extends javax.swing.JFrame {
         this.setOpenedFile(null);
     }//GEN-LAST:event_jNewActionPerformed
 
-    private void setOpenedFile(File openedFile){
+    private void setOpenedFile(File openedFile) {
         this.openedFile = openedFile;
 
-        if(openedFile != null){
+        if (openedFile != null) {
             setTitle(String.valueOf(openedFile.toPath()));
-        }else{
+        } else {
             setTitle(null);
         }
     }
