@@ -3,11 +3,21 @@ package core;
 import gals.*;
 
 import javax.swing.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AnalisadorLexico {
+
+    private int ID_INICIO_PALAVRA_RESERVADA = 7;
+    private int ID_FIM_PALAVRA_RESERVADA = 22;
+    private int ID_INICIO_SIMBOLO_ESPECIAL = 23;
+    private int ID_FIM_SIMBOLO_ESPECIAL = 41;
+
 
     private final JTextArea jMensagens;
 
@@ -16,8 +26,13 @@ public class AnalisadorLexico {
     }
 
     private int getLinha(String codigo, int posicao) {
-        String[] lines = codigo.split("\r\n|\n", posicao);
-        return lines.length;
+        Pattern compile = Pattern.compile("\r\n|\n");
+        Matcher matcher = compile.matcher(codigo.substring(0, posicao));
+        int lines = 1;
+        while (matcher.find())
+            lines++;
+
+        return lines;
     }
 
     public void analisar(String codigo) {
@@ -34,14 +49,15 @@ public class AnalisadorLexico {
             MensagemSucesso mensagemSucesso = new MensagemSucesso();
 
             while ((token = lexico.nextToken()) != null) {
-                if (palavrasReservadasInvalidas.contains(token.getLexeme()) && !(token.getId() >= 7 && token.getId() <= 21)) {
+                if (palavrasReservadasInvalidas.contains(token.getLexeme()) && !(token.getId() >= ID_INICIO_PALAVRA_RESERVADA && token.getId() <= ID_FIM_PALAVRA_RESERVADA)) {
                     throw new LexicalError("palavra reservada inválida", token.getPosition());
                 }
 
-                mensagemSucesso.add(getLinha(codigo, token.getPosition()), getClasseById(token.getId()), token.getLexeme());
+                int linha = getLinha(codigo, token.getPosition());
+                mensagemSucesso.add(linha, getClasseById(token.getId()), token.getLexeme());
             }
 
-            jMensagens.append(mensagemSucesso.getMensagem());
+            jMensagens.setText(mensagemSucesso.getMensagem());
 
 
         } catch (LexicalError e) {
@@ -82,8 +98,6 @@ public class AnalisadorLexico {
                     .append('\t')
                     .append("Classe")
                     .append('\t')
-                    .append('\t')
-                    .append('\t')
                     .append("Lexema")
                     .append('\n');
 
@@ -92,8 +106,6 @@ public class AnalisadorLexico {
                         .append(this.linha.get(i))
                         .append('\t')
                         .append(this.classe.get(i))
-                        .append('\t')
-                        .append('\t')
                         .append('\t')
                         .append(this.lexema.get(i))
                         .append('\n');
@@ -105,6 +117,10 @@ public class AnalisadorLexico {
     }
 
     private String getClasseById(int id) {
+
+        if (id == Constants.t_palavra) {
+            return "palavra";
+        }
 
         if (id == Constants.t_id) {
             return "identificador";
@@ -121,11 +137,11 @@ public class AnalisadorLexico {
             return "constante numérica";
         }
 
-        if (id >= 7 && id <= 21) {
+        if (id >= ID_INICIO_PALAVRA_RESERVADA && id <= ID_FIM_PALAVRA_RESERVADA) {
             return "palavra reservada";
         }
 
-        if (id >= 22 && id <= 40) {
+        if (id >= ID_INICIO_SIMBOLO_ESPECIAL && id <= ID_FIM_SIMBOLO_ESPECIAL) {
             return "símbolo especial";
         }
 
