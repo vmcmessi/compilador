@@ -63,10 +63,6 @@ public class AnalisadorLexico {
         } catch (LexicalError e) {
             //todo: Pegar todo o nome do identificador com problema
 
-
-            System.out.println(e.getPosition());
-            System.out.println(e.getMessage());
-
             jMensagens.setText(String.format("Erro na linha %d - %s",
                     getLinha(codigo, e.getPosition()),
                     e.getMessage()
