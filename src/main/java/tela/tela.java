@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 public class tela extends javax.swing.JFrame {
 
     private File openedFile;
+    private static tela instance;
 
     /**
      * Creates new form tela
@@ -37,6 +38,8 @@ public class tela extends javax.swing.JFrame {
         initComponents();
         jEditor.setBorder(new NumberedBorder());
         initShortcuts();
+
+        if (instance == null) instance = this;
     }
 
     /**
@@ -263,7 +266,7 @@ public class tela extends javax.swing.JFrame {
 
     private void jCompileActionPerformed() {//GEN-FIRST:event_jCompileActionPerformed
         final String codigo = jEditor.getText();
-        new AnalisadorLexico(jMensagens).analisar(codigo);
+        new AnalisadorLexico(jMensagens).analisar();
     }//GEN-LAST:event_jCompileActionPerformed
 
     private void jCutActionPerformed() {//GEN-FIRST:event_jCutActionPerformed
@@ -373,6 +376,10 @@ public class tela extends javax.swing.JFrame {
         } else {
             setTitle(null);
         }
+    }
+
+    public static String getCodigo() {
+        return instance.jEditor.getText() == null ? "" : instance.jEditor.getText();
     }
 
     private void initShortcuts() {

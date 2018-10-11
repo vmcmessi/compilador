@@ -1,11 +1,10 @@
 package core;
 
 import gals.*;
+import tela.tela;
 
 import javax.swing.*;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -25,9 +24,9 @@ public class AnalisadorLexico {
         this.jMensagens = jMensagens;
     }
 
-    private int getLinha(String codigo, int posicao) {
+    private int getLinha(int posicao) {
         Pattern compile = Pattern.compile("\r\n|\n");
-        Matcher matcher = compile.matcher(codigo.substring(0, posicao));
+        Matcher matcher = compile.matcher(tela.getCodigo().substring(0, posicao));
         int lines = 1;
         while (matcher.find())
             lines++;
@@ -35,9 +34,9 @@ public class AnalisadorLexico {
         return lines;
     }
 
-    public void analisar(String codigo) {
+    public void analisar() {
         final Lexico lexico = new Lexico();
-        lexico.setInput(codigo);
+        lexico.setInput(tela.getCodigo());
 
         final ArrayList<String> palavrasReservadasInvalidas = new ArrayList<>();
         for (String palavrasReservada : ScannerConstants.SPECIAL_CASES_KEYS) {
@@ -53,7 +52,7 @@ public class AnalisadorLexico {
                     throw new LexicalError("palavra reservada inválida", token.getPosition());
                 }
 
-                int linha = getLinha(codigo, token.getPosition());
+                int linha = getLinha(token.getPosition());
                 mensagemSucesso.add(linha, getClasseById(token.getId()), token.getLexeme());
             }
 
@@ -61,11 +60,11 @@ public class AnalisadorLexico {
 
 
         } catch (LexicalError e) {
-            //todo: Pegar todo o nome do identificador com problema
+            final String tratar = TratamentoErro.tratar(e.getMessage(), e.getPosition());
 
             jMensagens.setText(String.format("Erro na linha %d - %s",
-                    getLinha(codigo, e.getPosition()),
-                    e.getMessage()
+                    getLinha(e.getPosition()),
+                    tratar
             ));
         }
     }
