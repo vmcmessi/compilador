@@ -261,7 +261,7 @@ public class tela extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jAboutActionPerformed() {//GEN-FIRST:event_jAboutActionPerformed
-        jMensagens.setText("Victor Matheus Cunha, Richard Curbani Alfarth e Christian Passold");
+        jMensagens.setText("Christian Passold, Richard Curbani Alfarth e Victor Matheus Cunha");
     }//GEN-LAST:event_jAboutActionPerformed
 
     private void jCompileActionPerformed() {//GEN-FIRST:event_jCompileActionPerformed
@@ -304,19 +304,11 @@ public class tela extends javax.swing.JFrame {
             jMensagens.setText(null);
             if (openedFile == null || !openedFile.exists()) {
                 this.setOpenedFile(TelaUtil.chooserSave(this));
-
-                if (openedFile != null) {
-                    jStatus.setText("O arquivo foi salvo");
-                    TelaUtil.writeToFile(openedFile, text);
-                }
-            } else {
-                jStatus.setText("O arquivo foi salvo");
-                TelaUtil.writeToFile(openedFile, text);
             }
 
+            TelaUtil.writeToFile(openedFile, text);
         } catch (IOException e) {
             Logger.getLogger(tela.class.getName()).log(Level.SEVERE, "Erro ao salvar", e);
-            jStatus.setText(e.getMessage());
         }
 
     }//GEN-LAST:event_jSaveActionPerformed
@@ -330,7 +322,6 @@ public class tela extends javax.swing.JFrame {
             if (selectedFile == null) return;
 
             this.setOpenedFile(selectedFile);
-            setTitle(String.valueOf(openedFile.toPath()));
 
             BufferedReader readFile = null;
             try {
@@ -345,7 +336,6 @@ public class tela extends javax.swing.JFrame {
                     jEditor.append("\n");
                 }
 
-                jStatus.setText("Arquivo aberto!");
             } catch (IOException ex) {
                 Logger.getLogger(tela.class.getName()).log(Level.SEVERE, null, ex);
                 jStatus.setText(ex.getMessage());
@@ -372,9 +362,9 @@ public class tela extends javax.swing.JFrame {
         this.openedFile = openedFile;
 
         if (openedFile != null) {
-            setTitle(String.valueOf(openedFile.toPath()));
+            jStatus.setText(String.valueOf(openedFile.toPath()));
         } else {
-            setTitle(null);
+            jStatus.setText(null);
         }
     }
 
