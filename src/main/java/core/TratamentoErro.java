@@ -1,5 +1,7 @@
 package core;
 
+import gals.Constants;
+import gals.Token;
 import tela.tela;
 
 import java.util.regex.Matcher;
@@ -7,13 +9,21 @@ import java.util.regex.Pattern;
 
 public class TratamentoErro {
 
-    static String tratar(String msg, int posicao) {
+    static String tratarLexico(String msg, int posicao) {
         if (msg.equalsIgnoreCase("símbolo inválido")
                 || msg.equalsIgnoreCase("palavra reservada inválida")) {
             msg = getSimbolo(posicao) + " " + msg;
         }
 
         return msg;
+    }
+
+    static String tratarSintatico(String msg, Token token) {
+        if (token.getLexeme().equalsIgnoreCase("$")) {
+            return "encontrado fim de programa " + msg;
+        }
+
+        return "encontrado " + getSimbolo(token.getPosition()) + " " + msg;
     }
 
     private static String getSimbolo(int posicao) {

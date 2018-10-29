@@ -5,7 +5,7 @@
  */
 package tela;
 
-import core.AnalisadorLexico;
+import core.Analisador;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
@@ -266,7 +266,7 @@ public class tela extends javax.swing.JFrame {
 
     private void jCompileActionPerformed() {//GEN-FIRST:event_jCompileActionPerformed
         final String codigo = jEditor.getText();
-        new AnalisadorLexico(jMensagens).analisar();
+        new Analisador(jMensagens).analisar();
     }//GEN-LAST:event_jCompileActionPerformed
 
     private void jCutActionPerformed() {//GEN-FIRST:event_jCutActionPerformed
