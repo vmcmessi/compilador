@@ -12,7 +12,7 @@ public class TratamentoErro {
     static String tratarLexico(String msg, int posicao) {
         if (msg.equalsIgnoreCase("símbolo inválido")
                 || msg.equalsIgnoreCase("palavra reservada inválida")) {
-            msg = getSimbolo(posicao) + " " + msg;
+            msg = getSimbolo(posicao, true) + " " + msg;
         }
 
         return msg;
@@ -23,11 +23,26 @@ public class TratamentoErro {
             return "encontrado fim de programa " + msg;
         }
 
-        return "encontrado " + getSimbolo(token.getPosition()) + " " + msg;
+        switch (token.getId()){
+            case 2:
+                return getSimbolo(token.getPosition(), false) + " palavra reservada inválida";
+            case 4:
+                return "encontrado constante numérica " + msg;
+            case 5:
+                return "encontrado constante caractere " + msg;
+            case 6:
+                return "encontrado constante literal " + msg;
+
+            default: return "encontrado " + getSimbolo(token.getPosition(), false) + " " + msg;
+        }
     }
 
-    private static String getSimbolo(int posicao) {
+    private static String getSimbolo(int posicao, boolean exact) {
         final String codigo = tela.getCodigo();
+
+        if(exact){
+            return String.valueOf(codigo.charAt(posicao));
+        }
 
         Pattern compile = Pattern.compile("\\S\\w*");
         Matcher matcher = compile.matcher(codigo.substring(posicao));
