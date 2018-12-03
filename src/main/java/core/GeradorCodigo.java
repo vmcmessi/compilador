@@ -223,7 +223,7 @@ public class GeradorCodigo {
 
         if (!Util.isTipoNumerico(tipo1)
                 || !Util.isTipoNumerico(tipo2)
-                || !tipo1.equalsIgnoreCase(tipo2)
+                || !tipo1.equals(tipo2)
         ) {
             //todo
             throw new SemanticError("");
@@ -361,8 +361,8 @@ public class GeradorCodigo {
             throw new SemanticError("");
         }
 
-        if (valor1.equalsIgnoreCase(TRUE)
-                && valor2.equalsIgnoreCase(TRUE)) {
+        if (valor1.equals(TRUE)
+                && valor2.equals(TRUE)) {
             this.empilha(TRUE);
         } else {
             this.empilha(FALSE);
@@ -379,8 +379,8 @@ public class GeradorCodigo {
             throw new SemanticError("");
         }
 
-        if (valor1.equalsIgnoreCase(TRUE)
-                || valor2.equalsIgnoreCase(TRUE)) {
+        if (valor1.equals(TRUE)
+                || valor2.equals(TRUE)) {
             this.empilha(TRUE);
         } else {
             this.empilha(FALSE);
@@ -436,6 +436,9 @@ public class GeradorCodigo {
                     break;
                 case "bool":
                     classe = "Boolean";
+                    break;
+                case "int64":
+                    classe = "Int64";
                     break;
                 case "string":
                     classe = "String";
