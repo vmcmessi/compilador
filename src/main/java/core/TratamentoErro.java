@@ -1,6 +1,5 @@
 package core;
 
-import gals.Constants;
 import gals.Token;
 import tela.tela;
 

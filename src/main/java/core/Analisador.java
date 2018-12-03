@@ -39,8 +39,8 @@ public class Analisador {
             jMensagens.setText(MensagemErro.getMensagemLexico(e.getPosition(), e.getMessage()));
         } catch (SyntaticError e) {
             jMensagens.setText(MensagemErro.getMensagemSintatico(e.getToken(), e.getMessage()));
-        } catch (SemanticError semanticError) {
-            //ignore
+        } catch (SemanticError e) {
+            jMensagens.setText(MensagemErro.getMensagemSemantico(e.getPosition(), e.getMessage()));
         }
     }
 
@@ -149,6 +149,13 @@ public class Analisador {
             return String.format("Erro na linha %d - %s",
                     getLinha(token.getPosition()),
                     tratar
+            );
+        }
+
+        static String getMensagemSemantico(int position, String message) {
+            return String.format("Erro na linha %d - %s",
+                    getLinha(position),
+                    message
             );
         }
 

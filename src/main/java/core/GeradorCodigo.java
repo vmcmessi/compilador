@@ -33,88 +33,92 @@ public class GeradorCodigo {
     }
 
     public void executeAction(int action, Token token) throws SemanticError {
-        switch (action) {
-            case 1:
-                somar();
-                break;
-            case 2:
-                subtrair();
-                break;
-            case 3:
-                multiplicar();
-                break;
-            case 4:
-                dividir();
-                break;
-            case 5:
-                empilhaInt64(token);
-                break;
-            case 6:
-                empilhaFloat64(token);
-                break;
-            case 7:
-                verificarTipoSoma();
-                break;
-            case 8:
-                verificarTipoSubtracao();
-                break;
-            case 9:
-                this.operador = token.getLexeme();
-                break;
-            case 10:
-                relacional();
-                break;
-            case 11:
-                empilhaTrue();
-                break;
-            case 12:
-                empilhaFalse();
-                break;
-            case 13:
-                not();
-                break;
-            case 14:
-                write();
-                break;
-            case 15:
-                inicioCodigo();
-                break;
-            case 16:
-                fimCodigo();
-                break;
-            case 17:
-                and();
-                break;
-            case 18:
-                or();
-                break;
-            case 101:
-                setTipoVar(token);
-                break;
-            case 102:
-                listaIdentificadores.add(token.getLexeme());
-                break;
-            case 103:
-                declararVariaveis();
-                break;
-            case 104:
-                read();
-                break;
-            case 105:
-                empilhaFatorExpressao(token);
-                break;
-            case 106:
-                atribuicao();
-                break;
-            case 107:
-                desviaFalse(token);
-                break;
-            case 108:
-                desvia(token);
-                break;
-            case 109:
-                geraLabelDesvio();
-                break;
+        try {
+            switch (action) {
+                case 1:
+                    somar();
+                    break;
+                case 2:
+                    subtrair();
+                    break;
+                case 3:
+                    multiplicar();
+                    break;
+                case 4:
+                    dividir();
+                    break;
+                case 5:
+                    empilhaInt64(token);
+                    break;
+                case 6:
+                    empilhaFloat64(token);
+                    break;
+                case 7:
+                    verificarTipoSoma();
+                    break;
+                case 8:
+                    verificarTipoSubtracao();
+                    break;
+                case 9:
+                    this.operador = token.getLexeme();
+                    break;
+                case 10:
+                    relacional();
+                    break;
+                case 11:
+                    empilhaTrue();
+                    break;
+                case 12:
+                    empilhaFalse();
+                    break;
+                case 13:
+                    not();
+                    break;
+                case 14:
+                    write();
+                    break;
+                case 15:
+                    inicioCodigo();
+                    break;
+                case 16:
+                    fimCodigo();
+                    break;
+                case 17:
+                    and();
+                    break;
+                case 18:
+                    or();
+                    break;
+                case 101:
+                    setTipoVar(token);
+                    break;
+                case 102:
+                    listaIdentificadores.add(token.getLexeme());
+                    break;
+                case 103:
+                    declararVariaveis();
+                    break;
+                case 104:
+                    read();
+                    break;
+                case 105:
+                    empilhaFatorExpressao(token);
+                    break;
+                case 106:
+                    atribuicao();
+                    break;
+                case 107:
+                    desviaFalse(token);
+                    break;
+                case 108:
+                    desvia(token);
+                    break;
+                case 109:
+                    geraLabelDesvio();
+                    break;
+            }
+        } catch (SemanticError semanticError) {
+            throw new SemanticError(semanticError.getMessage(), token.getPosition());
         }
     }
 
@@ -165,8 +169,7 @@ public class GeradorCodigo {
         String tipo2 = this.desempilha();
 
         if (!Util.isTipoNumerico(tipo1) || !Util.isTipoNumerico(tipo2)) {
-            //todo
-            throw new SemanticError("");
+            throw new SemanticError("Tipos incompatíveis em operação aritmética binária");
         }
 
         if (tipo1.equals(FLOAT64) || tipo2.equals(FLOAT64)) {
@@ -184,8 +187,7 @@ public class GeradorCodigo {
         String tipo2 = this.desempilha();
 
         if (!Util.isTipoNumerico(tipo1) || !Util.isTipoNumerico(tipo2)) {
-            //todo
-            throw new SemanticError("");
+            throw new SemanticError("Tipos incompatíveis em operação aritmética binária");
         }
 
         if (tipo1.equals(FLOAT64) || tipo2.equals(FLOAT64)) {
@@ -203,8 +205,7 @@ public class GeradorCodigo {
         String tipo2 = this.desempilha();
 
         if (!Util.isTipoNumerico(tipo1) || !Util.isTipoNumerico(tipo2)) {
-            //todo
-            throw new SemanticError("");
+            throw new SemanticError("Tipos incompatíveis em operação aritmética binária");
         }
 
         if (tipo1.equals(FLOAT64) || tipo2.equals(FLOAT64)) {
@@ -225,8 +226,7 @@ public class GeradorCodigo {
                 || !Util.isTipoNumerico(tipo2)
                 || !tipo1.equals(tipo2)
         ) {
-            //todo
-            throw new SemanticError("");
+            throw new SemanticError("Tipos incompatíveis em operação aritmética binária");
         }
 
         this.empilha(tipo1);
@@ -252,8 +252,7 @@ public class GeradorCodigo {
         if (tipo.equals(FLOAT64) || tipo.equals(INT64)) {
             this.empilha(tipo);
         } else {
-            //todo
-            throw new SemanticError("");
+            throw new SemanticError("Tipo incompatível em operação aritmética unária");
         }
     }
 
@@ -263,8 +262,7 @@ public class GeradorCodigo {
         if (tipo.equals(FLOAT64) || tipo.equals(INT64)) {
             this.empilha(tipo);
         } else {
-            //todo
-            throw new SemanticError("");
+            throw new SemanticError("Tipo incompatível em operação aritmética unária");
         }
 
         this.addCodigo("ldc.i8 -1");
@@ -279,8 +277,7 @@ public class GeradorCodigo {
         if (tipo1.equals(tipo2)) {
             this.empilha(BOOL);
         } else {
-            //todo
-            throw new SemanticError("");
+            throw new SemanticError("Tipos incompatíveis em operação relacional");
         }
 
         switch (operador) {
@@ -316,8 +313,7 @@ public class GeradorCodigo {
         if (tipo.equals(BOOL)) {
             this.empilha(BOOL);
         } else {
-            //todo
-            throw new SemanticError("");
+            throw new SemanticError("Tipo incompatível em operação lógica unária");
         }
         this.addCodigo("ldc.i4.1");
         this.addCodigo("xor");
@@ -357,8 +353,7 @@ public class GeradorCodigo {
         String valor2 = this.desempilha();
 
         if (!Util.isBooleano(valor1) || !Util.isBooleano(valor2)) {
-            //todo
-            throw new SemanticError("");
+            throw new SemanticError("Tipos incompatíveis em operação lógica binária");
         }
 
         if (valor1.equals(TRUE)
@@ -375,8 +370,7 @@ public class GeradorCodigo {
         String valor2 = this.desempilha();
 
         if (!Util.isBooleano(valor1) || !Util.isBooleano(valor2)) {
-            //todo
-            throw new SemanticError("");
+            throw new SemanticError("Tipos incompatíveis em operação lógica binária");
         }
 
         if (valor1.equals(TRUE)
@@ -408,8 +402,7 @@ public class GeradorCodigo {
     public void declararVariaveis() throws SemanticError {
         for (String id : listaIdentificadores) {
             if (tabelaSimbolos.containsKey(id)) {
-                //todo
-                throw new SemanticError("");
+                throw new SemanticError("Identificador já declarado");
             }
 
             tabelaSimbolos.put(id, tipovar);
@@ -424,8 +417,7 @@ public class GeradorCodigo {
         for (String id : listaIdentificadores) {
 
             if (!tabelaSimbolos.containsKey(id)) {
-                //todo
-                throw new SemanticError("");
+                throw new SemanticError("Identificador não declarado");
             }
 
             String tipoId = tabelaSimbolos.get(id);
@@ -462,8 +454,7 @@ public class GeradorCodigo {
     public void empilhaFatorExpressao(Token token) throws SemanticError {
         String id = token.getLexeme();
         if (!tabelaSimbolos.containsKey(id)) {
-            //todo
-            throw new SemanticError("");
+            throw new SemanticError("Identificador não declarado");
         }
 
         String tipoId = tabelaSimbolos.get(id);
@@ -479,16 +470,14 @@ public class GeradorCodigo {
         String id = listaIdentificadores.poll();
 
         if (!tabelaSimbolos.containsKey(id)) {
-            //todo
-            throw new SemanticError("");
+            throw new SemanticError("Identificador não declarado");
         }
 
         String tipoId = tabelaSimbolos.get(id);
         String tipoExp = this.desempilha();
 
         if (!tipoExp.equals(tipoId)) {
-            //todo
-            throw new SemanticError("");
+            throw new SemanticError("Tipo incompatível em comando de atribuição");
         }
 
         if (INT64.equals(tipoId)) {
