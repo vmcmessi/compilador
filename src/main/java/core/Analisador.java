@@ -4,6 +4,8 @@ import gals.*;
 import tela.tela;
 
 import javax.swing.*;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -34,6 +36,7 @@ public class Analisador {
             MensagemSucesso mensagemSucesso = new MensagemSucesso();
             sintatico.parse(lexico, semantico);
 
+            GeradorCodigo.getInstance().writeToFile();
             jMensagens.setText(mensagemSucesso.getMensagem());
         } catch (LexicalError e) {
             jMensagens.setText(MensagemErro.getMensagemLexico(e.getPosition(), e.getMessage()));
@@ -41,6 +44,9 @@ public class Analisador {
             jMensagens.setText(MensagemErro.getMensagemSintatico(e.getToken(), e.getMessage()));
         } catch (SemanticError e) {
             jMensagens.setText(MensagemErro.getMensagemSemantico(e.getPosition(), e.getMessage()));
+        } catch (IOException e) {
+            jMensagens.setText(e.getMessage());
+            e.printStackTrace();
         }
     }
 

@@ -28,6 +28,8 @@ class TelaUtil {
         try {
             fileOutputStream = new FileOutputStream(selectFile);
             fileOutputStream.write(text.getBytes());
+        }catch (NullPointerException npe){
+            //ignore
         } finally {
             if (fileOutputStream != null) {
                 try {

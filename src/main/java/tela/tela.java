@@ -265,8 +265,12 @@ public class tela extends javax.swing.JFrame {
     }//GEN-LAST:event_jAboutActionPerformed
 
     private void jCompileActionPerformed() {//GEN-FIRST:event_jCompileActionPerformed
-        final String codigo = jEditor.getText();
-        new Analisador(jMensagens).analisar();
+        if(openedFile == null){
+            jSaveActionPerformed();
+        }else{
+            jSaveActionPerformed();
+            new Analisador(jMensagens).analisar();
+        }
     }//GEN-LAST:event_jCompileActionPerformed
 
     private void jCutActionPerformed() {//GEN-FIRST:event_jCutActionPerformed
@@ -370,6 +374,15 @@ public class tela extends javax.swing.JFrame {
 
     public static String getCodigo() {
         return instance.jEditor.getText() == null ? "" : instance.jEditor.getText();
+    }
+
+    public static String getFilenameOpened () {
+
+        if(instance.openedFile == null){
+            throw new NullPointerException("Nenhum arquivo aberto");
+        }
+
+        return instance.openedFile.getName();
     }
 
     private void initShortcuts() {

@@ -2,7 +2,13 @@ package core;
 
 import gals.SemanticError;
 import gals.Token;
+import tela.tela;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class GeradorCodigo {
@@ -13,6 +19,9 @@ public class GeradorCodigo {
     private Queue<String> codigo;
     private Queue<String> listaIdentificadores;
     private Map<String, String> tabelaSimbolos;
+    private int indexLabel = 0;
+    private String operador;
+    private String tipovar;
 
     //
     public static final String FLOAT64 = "float64";
@@ -21,15 +30,44 @@ public class GeradorCodigo {
     public static final String BOOL = "boolean";
     public static final String TRUE = "true";
     public static final String FALSE = "false";
-    private String FLOAT_SEPARATOR = ".";
-    private String operador;
-    private String tipovar;
 
     private GeradorCodigo() {
         pilha = new Stack<>();
         codigo = new LinkedList<>();
         listaIdentificadores = new LinkedList<>();
         tabelaSimbolos = new HashMap<>();
+    }
+
+    private void clearAll() {
+        pilha.clear();
+        codigo.clear();
+        listaIdentificadores.clear();
+        tabelaSimbolos.clear();
+        indexLabel = 0;
+        operador = null;
+        tipovar = null;
+    }
+
+    public StringBuilder gerarCodigo() {
+        final StringBuilder stringBuilder = new StringBuilder();
+
+        final int size = codigo.size();
+        for (int i = 0; i < size; i++) {
+            final String poll = codigo.poll();
+            stringBuilder.append(poll);
+
+            if (size != (i + 1)) {
+                stringBuilder.append('\n');
+            }
+        }
+
+        return stringBuilder;
+    }
+
+    public void writeToFile() throws IOException {
+        Path file = Paths.get(String.format("./%s.il", tela.getFilenameOpened().split("\\.")[0]));
+        Files.write(file, codigo, Charset.forName("UTF-8"));
+        clearAll();
     }
 
     public void executeAction(int action, Token token) throws SemanticError {
@@ -89,6 +127,12 @@ public class GeradorCodigo {
                 case 18:
                     or();
                     break;
+                case 19:
+                    constanteCaractere(token);
+                    break;
+                case 20:
+                    constanteLiteral(token);
+                    break;
                 case 101:
                     setTipoVar(token);
                     break;
@@ -108,13 +152,22 @@ public class GeradorCodigo {
                     atribuicao();
                     break;
                 case 107:
-                    desviaFalse(token);
+                    desviaFalse();
                     break;
                 case 108:
-                    desvia(token);
+                    desvia();
                     break;
                 case 109:
                     geraLabelDesvio();
+                    break;
+                case 110:
+                    desvia2();
+                    break;
+                case 111:
+                    desviaTrue();
+                    break;
+                case 112:
+                    geraLabelDesvio2();
                     break;
             }
         } catch (SemanticError semanticError) {
@@ -159,7 +212,7 @@ public class GeradorCodigo {
     /**
      * Adiciona codigo na lista formatado
      */
-    public void addCodigo(String instruction, String... args) {
+    public void addCodigo(String instruction, Object... args) {
         this.codigo.add(String.format(instruction, args));
     }
 
@@ -381,6 +434,32 @@ public class GeradorCodigo {
         }
     }
 
+    //19
+    public void constanteCaractere(Token token) throws SemanticError {
+        String constCaractere;
+        switch (token.getLexeme()) {
+            case "'\\s'":
+                constCaractere = " ";
+                break;
+            case "'\\t'":
+                constCaractere = "\\t";
+                break;
+            case "'\\n'":
+                constCaractere = "\\n";
+                break;
+            default:
+                throw new SemanticError("Constante caractere inválida");
+        }
+        this.empilha(STRING);
+        this.addCodigo("ldstr \"%s\"", constCaractere);
+    }
+
+    //20
+    public void constanteLiteral(Token token) {
+        this.empilha(STRING);
+        this.addCodigo("%s", token.getLexeme());
+    }
+
     //101
     public void setTipoVar(Token token) {
 
@@ -488,25 +567,42 @@ public class GeradorCodigo {
     }
 
     //107
-    //todo: idk
-    public void desviaFalse(Token token) {
-        this.addCodigo("brfalse %s", token.getLexeme());
+    //todo: check
+    public void desviaFalse() {
+        this.addCodigo("brfalse label%d", ++indexLabel);
     }
 
     //108
-    //todo: idk
-    public void desvia(Token token) {
-        this.addCodigo("%s:", token.getLexeme());
+    //todo: check
+    public void desvia() {
+        this.addCodigo("label%d:", indexLabel);
     }
 
     //109
-    //todo: idk
+    //todo: check
     public void geraLabelDesvio() {
-        String label1 = desempilha();
-        String label2 = desempilha();
-
-        this.addCodigo("br %s", label1);
-        this.addCodigo("%s:", label2);
+        this.addCodigo("br label%d", indexLabel);
+        this.addCodigo("label%d:", indexLabel - 1);
     }
+
+    //110
+    //todo: check
+    public void desvia2() {
+        this.addCodigo("label%d:", indexLabel);
+    }
+
+    //111
+    //todo: check
+    public void desviaTrue() {
+        this.addCodigo("brtrue label%d", ++indexLabel);
+    }
+
+    //112
+    //todo: check
+    public void geraLabelDesvio2() {
+        this.addCodigo("br label%d", indexLabel - 1);
+        this.addCodigo("label%d:", indexLabel);
+    }
+
 
 }
