@@ -19,7 +19,7 @@ public class GeradorCodigo {
     private Queue<String> codigo;
     private Queue<String> listaIdentificadores;
     private Map<String, String> tabelaSimbolos;
-    private int indexLabel = 0;
+    private int indexLabel = 1;
     private String operador;
     private String tipovar;
 
@@ -43,7 +43,7 @@ public class GeradorCodigo {
         codigo.clear();
         listaIdentificadores.clear();
         tabelaSimbolos.clear();
-        indexLabel = 0;
+        indexLabel = 1;
         operador = null;
         tipovar = null;
     }
@@ -296,7 +296,7 @@ public class GeradorCodigo {
     //6
     public void empilhaFloat64(Token token) {
         this.empilha(FLOAT64);
-        this.addCodigo("ldc.i8 %s", token.getLexeme());
+        this.addCodigo("ldc.r8 %s", token.getLexeme());
     }
 
     //7
@@ -457,7 +457,7 @@ public class GeradorCodigo {
     //20
     public void constanteLiteral(Token token) {
         this.empilha(STRING);
-        this.addCodigo("%s", token.getLexeme());
+        this.addCodigo("ldstr %s", token.getLexeme());
     }
 
     //101
