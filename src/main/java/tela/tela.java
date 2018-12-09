@@ -319,7 +319,8 @@ public class tela extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed() {//GEN-FIRST:event_jButton2ActionPerformed
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        int returnValue = jfc.showOpenDialog(null);
+        jfc.setCurrentDirectory(new File("."));
+        int returnValue = jfc.showOpenDialog(this);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = jfc.getSelectedFile();
 
@@ -382,7 +383,7 @@ public class tela extends javax.swing.JFrame {
             throw new NullPointerException("Nenhum arquivo aberto");
         }
 
-        return instance.openedFile.getName();
+        return instance.openedFile.getPath();
     }
 
     private void initShortcuts() {

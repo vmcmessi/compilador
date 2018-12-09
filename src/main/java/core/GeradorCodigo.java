@@ -19,9 +19,11 @@ public class GeradorCodigo {
     private Queue<String> codigo;
     private Queue<String> listaIdentificadores;
     private Map<String, String> tabelaSimbolos;
+    private ArrayList<Integer> labels = new ArrayList<>();
     private int indexLabel = 1;
     private String operador;
     private String tipovar;
+    private int ultimoExecutado = 0;
 
     //
     public static final String FLOAT64 = "float64";
@@ -65,13 +67,19 @@ public class GeradorCodigo {
     }
 
     public void writeToFile() throws IOException {
-        Path file = Paths.get(String.format("./%s.il", tela.getFilenameOpened().split("\\.")[0]));
+        String filenameOpened = tela.getFilenameOpened();
+        int indexDot = filenameOpened.lastIndexOf('.');
+        String pathWithoutDot = filenameOpened.substring(0, indexDot);
+        pathWithoutDot = pathWithoutDot.replace('\\', '/');
+
+        Path file = Paths.get(String.format("%s.il", pathWithoutDot));
         Files.write(file, codigo, Charset.forName("UTF-8"));
         clearAll();
     }
 
     public void executeAction(int action, Token token) throws SemanticError {
         try {
+            ultimoExecutado = action;
             switch (action) {
                 case 1:
                     somar();
@@ -191,33 +199,33 @@ public class GeradorCodigo {
     /**
      * Empilha token
      */
-    public void empilha(String value) {
+    private void empilha(String value) {
         this.pilha.push(value);
     }
 
     /**
      * Desempilha token
      */
-    public String desempilha() {
+    private String desempilha() {
         return this.pilha.pop();
     }
 
     /**
      * Adiciona codigo na lista
      */
-    public void addCodigo(String instruction) {
+    private void addCodigo(String instruction) {
         this.codigo.add(instruction);
     }
 
     /**
      * Adiciona codigo na lista formatado
      */
-    public void addCodigo(String instruction, Object... args) {
+    private void addCodigo(String instruction, Object... args) {
         this.codigo.add(String.format(instruction, args));
     }
 
     //1
-    public void somar() throws SemanticError {
+    private void somar() throws SemanticError {
         String tipo1 = this.desempilha();
         String tipo2 = this.desempilha();
 
@@ -235,7 +243,7 @@ public class GeradorCodigo {
     }
 
     //2
-    public void subtrair() throws SemanticError {
+    private void subtrair() throws SemanticError {
         String tipo1 = this.desempilha();
         String tipo2 = this.desempilha();
 
@@ -253,7 +261,7 @@ public class GeradorCodigo {
     }
 
     //3
-    public void multiplicar() throws SemanticError {
+    private void multiplicar() throws SemanticError {
         String tipo1 = this.desempilha();
         String tipo2 = this.desempilha();
 
@@ -271,7 +279,7 @@ public class GeradorCodigo {
     }
 
     //4
-    public void dividir() throws SemanticError {
+    private void dividir() throws SemanticError {
         String tipo1 = this.desempilha();
         String tipo2 = this.desempilha();
 
@@ -287,20 +295,20 @@ public class GeradorCodigo {
     }
 
     //5
-    public void empilhaInt64(Token token) {
+    private void empilhaInt64(Token token) {
         this.empilha(INT64);
         this.addCodigo("ldc.i8 %s", token.getLexeme());
         this.addCodigo("conv.r8");
     }
 
     //6
-    public void empilhaFloat64(Token token) {
+    private void empilhaFloat64(Token token) {
         this.empilha(FLOAT64);
         this.addCodigo("ldc.r8 %s", token.getLexeme());
     }
 
     //7
-    public void verificarTipoSoma() throws SemanticError {
+    private void verificarTipoSoma() throws SemanticError {
         String tipo = this.desempilha();
         if (tipo.equals(FLOAT64) || tipo.equals(INT64)) {
             this.empilha(tipo);
@@ -310,7 +318,7 @@ public class GeradorCodigo {
     }
 
     //8
-    public void verificarTipoSubtracao() throws SemanticError {
+    private void verificarTipoSubtracao() throws SemanticError {
         String tipo = this.desempilha();
         if (tipo.equals(FLOAT64) || tipo.equals(INT64)) {
             this.empilha(tipo);
@@ -324,7 +332,7 @@ public class GeradorCodigo {
     }
 
     //10
-    public void relacional() throws SemanticError {
+    private void relacional() throws SemanticError {
         String tipo1 = this.desempilha();
         String tipo2 = this.desempilha();
         if (tipo1.equals(tipo2)) {
@@ -348,19 +356,19 @@ public class GeradorCodigo {
     }
 
     //11
-    public void empilhaFalse() {
+    private void empilhaFalse() {
         this.empilha("bool");
         this.addCodigo("ldc.i4.0");
     }
 
     //12
-    public void empilhaTrue() {
+    private void empilhaTrue() {
         this.empilha("bool");
         this.addCodigo("ldc.i4.1");
     }
 
     //13
-    public void not() throws SemanticError {
+    private void not() throws SemanticError {
         String tipo = this.desempilha();
 
         if (tipo.equals(BOOL)) {
@@ -373,7 +381,7 @@ public class GeradorCodigo {
     }
 
     //14
-    public void write() {
+    private void write() {
         String tipo = this.desempilha();
         if (tipo.equals(INT64)) {
             this.addCodigo("conv.i8");
@@ -382,26 +390,26 @@ public class GeradorCodigo {
     }
 
     //15
-    public void inicioCodigo() {
+    private void inicioCodigo() {
         this.addCodigo(".assembly extern mscorlib {}\n" +
                 ".assembly _codigo_objeto{}\n" +
                 ".module _codigo_objeto.exe\n" +
                 "\n" +
-                ".class public _UNICA{\n" +
-                ".method static public void _PRINCIPAL(){\n" +
+                ".class private _UNICA{\n" +
+                ".method static private void _PRINCIPAL(){\n" +
                 ".entrypoint\n"
         );
     }
 
     //16
-    public void fimCodigo() {
+    private void fimCodigo() {
         this.addCodigo("ret\n" +
                 "}\n" +
                 "}");
     }
 
     //17
-    public void and() throws SemanticError {
+    private void and() throws SemanticError {
         String valor1 = this.desempilha();
         String valor2 = this.desempilha();
 
@@ -418,7 +426,7 @@ public class GeradorCodigo {
     }
 
     //18
-    public void or() throws SemanticError {
+    private void or() throws SemanticError {
         String valor1 = this.desempilha();
         String valor2 = this.desempilha();
 
@@ -435,7 +443,7 @@ public class GeradorCodigo {
     }
 
     //19
-    public void constanteCaractere(Token token) throws SemanticError {
+    private void constanteCaractere(Token token) throws SemanticError {
         String constCaractere;
         switch (token.getLexeme()) {
             case "'\\s'":
@@ -455,13 +463,13 @@ public class GeradorCodigo {
     }
 
     //20
-    public void constanteLiteral(Token token) {
+    private void constanteLiteral(Token token) {
         this.empilha(STRING);
         this.addCodigo("ldstr %s", token.getLexeme());
     }
 
     //101
-    public void setTipoVar(Token token) {
+    private void setTipoVar(Token token) {
 
         switch (token.getLexeme()) {
             case "number":
@@ -478,7 +486,7 @@ public class GeradorCodigo {
     }
 
     //103
-    public void declararVariaveis() throws SemanticError {
+    private void declararVariaveis() throws SemanticError {
         for (String id : listaIdentificadores) {
             if (tabelaSimbolos.containsKey(id)) {
                 throw new SemanticError("Identificador já declarado");
@@ -492,7 +500,7 @@ public class GeradorCodigo {
     }
 
     //104
-    public void read() throws SemanticError {
+    private void read() throws SemanticError {
         for (String id : listaIdentificadores) {
 
             if (!tabelaSimbolos.containsKey(id)) {
@@ -530,7 +538,7 @@ public class GeradorCodigo {
     }
 
     //105
-    public void empilhaFatorExpressao(Token token) throws SemanticError {
+    private void empilhaFatorExpressao(Token token) throws SemanticError {
         String id = token.getLexeme();
         if (!tabelaSimbolos.containsKey(id)) {
             throw new SemanticError("Identificador não declarado");
@@ -545,7 +553,7 @@ public class GeradorCodigo {
     }
 
     //106
-    public void atribuicao() throws SemanticError {
+    private void atribuicao() throws SemanticError {
         String id = listaIdentificadores.poll();
 
         if (!tabelaSimbolos.containsKey(id)) {
@@ -568,40 +576,49 @@ public class GeradorCodigo {
 
     //107
     //todo: check
-    public void desviaFalse() {
-        this.addCodigo("brfalse label%d", ++indexLabel);
+    private void desviaFalse() {
+        this.labels.add(this.labels.size() + 1);
+        this.addCodigo("brfalse label%d", this.labels.get(this.labels.size() - 1));
     }
 
     //108
     //todo: check
-    public void desvia() {
-        this.addCodigo("label%d:", indexLabel);
+    private void desvia() {
+        if (ultimoExecutado == 108) {
+            this.labels.remove(this.labels.size() - 1);
+        }
+
+        this.addCodigo("label%d:", this.labels.get(this.labels.size() - 1));
+        this.labels.remove(this.labels.size() - 1);
     }
 
     //109
     //todo: check
-    public void geraLabelDesvio() {
-        this.addCodigo("br label%d", indexLabel);
-        this.addCodigo("label%d:", indexLabel - 1);
+    private void geraLabelDesvio() {
+        this.labels.add(this.labels.size() + 1);
+        this.addCodigo("br label%d", this.labels.get(this.labels.size() - 1));
+        this.addCodigo("label%d:", this.labels.get(this.labels.size() - 2));
     }
 
     //110
     //todo: check
-    public void desvia2() {
-        this.addCodigo("label%d:", indexLabel);
+    private void desvia2() {
+        this.labels.add(this.labels.size() + 1);
+        this.addCodigo("label%d:", this.labels.get(this.labels.size() - 1));
     }
 
     //111
     //todo: check
-    public void desviaTrue() {
-        this.addCodigo("brtrue label%d", ++indexLabel);
+    private void desviaTrue() {
+        this.labels.add(this.labels.size() + 1);
+        this.addCodigo("brtrue label%d", this.labels.get(this.labels.size() - 1));
     }
 
     //112
     //todo: check
-    public void geraLabelDesvio2() {
-        this.addCodigo("br label%d", indexLabel - 1);
-        this.addCodigo("label%d:", indexLabel);
+    private void geraLabelDesvio2() {
+        this.addCodigo("br label%d", this.labels.get(this.labels.size() - 2));
+        this.addCodigo("label%d:", this.labels.get(this.labels.size() - 1));
     }
 
 
