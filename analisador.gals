@@ -1,0 +1,151 @@
+#Options
+GenerateScanner = true
+GenerateParser = true
+Language = Java
+ScannerName = Lexico
+ParserName = Sintatico
+SemanticName = Semantico
+ScannerCaseSensitive = true
+ScannerTable = Compact
+Input = String
+Parser = LL
+#RegularDefinitions
+mi:[a-z]
+ma:[A-Z]
+nu:[0-9]
+con:s|n|t
+aspas: \"
+#Tokens
+//Palavra reservada
+palavra: ({mi}({ma}?{mi})*)
+
+//Identificador
+id:_({mi}{ma}?|{ma})(({mi}|{nu}){ma}?)*
+
+//Constante Numerica
+connum:{nu}+(\.({nu}+))?
+
+//Constante caractere
+concar: '\\{con}'
+
+//Constante literal
+conliteral: {aspas}([^\\\"\n])*{aspas}
+
+//ignorar
+//Comentario de linha
+: "/"/(.)*
+:[\t\n\s]
+
+
+//Palavras reservadas
+AND = palavra: "and"
+ARRAY = palavra: "array"
+DO = palavra: "do"
+EXIT = palavra: "exit"
+FALSE = palavra: "false"
+IF = palavra: "if"
+IFFALSEDO = palavra: "ifFalseDo"
+IFTRUEDO = palavra: "ifTrueDo"
+LITERAL = palavra: "literal"
+LOGICAL = palavra: "logical"
+NUMBER = palavra: "number"
+NOT = palavra: "not"
+OR = palavra: "or"
+TRUE = palavra: "true"
+WRITE = palavra: "write"
+READ = palavra: "read"
+
+//Simbolos especiais
+":"
+","
+"["
+"]"
+"{"
+"}"
+")"
+"("
+":="
+"+"
+"-"
+"*"
+"/"
+"="
+"!="
+"<"
+"<="
+">"
+">="
+#NonTerminals
+<programa>
+<lista_cmd>
+<declaracao_de_variavel>
+<tipo>
+<simples>
+<array>
+<arrsize>
+<lista_de_identificadores>
+<lista_de_identificadores1>
+<comandoattr>
+<lista_id_attr>
+<lista_id_attr1>
+<comandoread>
+<lista_id_read>
+<lista_id_read1>
+<comandowrite>
+<lista_expressoes>
+<lista_expressoes1>
+<comandoselect>
+<selectopcional>
+<comandorep>
+<comando>
+<expressao>
+<expressao1>
+<elemento>
+<relacional>
+<relacional1>
+<operador_relacional>
+<aritmetica>
+<aritmetica1>
+<termo>
+<termo1>
+<fator>
+<fator1>
+<fator2>
+
+#Grammar
+<programa>::= #15 <declaracao_de_variavel>"{"<lista_cmd>"}" #16 ;
+<lista_cmd>::=î|<comando><lista_cmd>;
+<declaracao_de_variavel>::= î|<tipo> #101 ":" <lista_de_identificadores>#103<declaracao_de_variavel>;
+<tipo>::=<simples>|<array>;
+<simples>::= NUMBER|LITERAL|LOGICAL;
+<array>::= ARRAY"["<simples>","<arrsize>"]";
+<arrsize>::=connum;
+<lista_de_identificadores>::= id#102<lista_de_identificadores1>;
+<lista_de_identificadores1>::= î|","<lista_de_identificadores>;
+<comandoattr>::=<lista_id_attr> ":=" <expressao>#106;
+<lista_id_attr>::= id#102<lista_id_attr1>;
+<lista_id_attr1>::= î|"["<expressao>"]";
+<comandoread>::= READ "("<lista_id_read>#104")";
+<lista_id_read>::=<lista_id_attr><lista_id_read1>;
+<lista_id_read1>::= î|","<lista_id_read>;
+<comandowrite>::=WRITE"("<lista_expressoes>")";
+<lista_expressoes>::=<expressao>#14<lista_expressoes1>;
+<lista_expressoes1>::= î|","<lista_expressoes>;
+<comandoselect>::="("<expressao>#107")" IFTRUEDO "{"<lista_cmd>"}"<selectopcional>#108;
+<selectopcional>::= î|#109IFFALSEDO "{"<lista_cmd>"}";
+<comandorep>::=#110 DO "{"<lista_cmd> IF "("<expressao>#111")" EXIT <lista_cmd>"}"#112;
+<comando>::=<comandoattr>|<comandoread>|<comandowrite>|<comandoselect>|<comandorep>;
+<expressao>::=<elemento><expressao1>;
+<expressao1>::= î|AND <elemento>#17<expressao1>| OR <elemento>#18<expressao1>;
+<elemento>::=<relacional> | TRUE#11 | FALSE#12 | NOT <elemento>#13;
+<relacional>::=<aritmetica><relacional1>;
+<relacional1>::= î|<operador_relacional>#9<aritmetica>#10;
+<operador_relacional>::= "=" | "!=" | "<" | "<=" | ">" | ">=";
+<aritmetica>::=<termo><aritmetica1>;
+<aritmetica1>::= î|"+" <termo>#1<aritmetica1> |"-" <termo>#2<aritmetica1>;
+<termo>::=<fator><termo1>;
+<termo1>::= î|"*" <fator>#3<termo1>|"/" <fator>#4<termo1>;
+<fator>::=id#105<fator1> | connum#6 | concar#19 | conliteral#20 | "(" <expressao> ")" | "+" <fator>#7 | "-" <fator>#8;
+<fator1>::= î|"[" <expressao> "]";
+
+
